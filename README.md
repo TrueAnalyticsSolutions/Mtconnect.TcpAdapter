@@ -1,0 +1,1 @@
+# Mtconnect.TcpAdapter
