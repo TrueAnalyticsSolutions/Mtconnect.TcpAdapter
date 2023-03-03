@@ -110,7 +110,7 @@ namespace Mtconnect
             }
             catch (Exception ex)
             {
-                Disconnect();
+                Disconnect(ex);
             }
         }
 
