@@ -9,9 +9,3 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "weekly"
-    registry:
-      - type: "nuget"
-        url: "https://api.nuget.org/v3/index.json"
-    update:
-      - package-regex: ".*"
-        include-prereleases: true
