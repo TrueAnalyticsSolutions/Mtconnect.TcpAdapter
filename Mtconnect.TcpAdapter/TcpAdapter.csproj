@@ -38,7 +38,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Mtconnect.AdapterInterface" Version="2.0.0-alpha.2" />
+    <PackageReference Include="Mtconnect.AdapterInterface" Version="2.0.0-alpha.4" />
   </ItemGroup>
 
   <ItemGroup>
