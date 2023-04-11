@@ -22,6 +22,9 @@
 	  <Version>2.0.0-beta.19</Version>
 	  <IncludeSymbols>True</IncludeSymbols>
 	  <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+	  <DebugSymbols>true</DebugSymbols>
+	  <EmbedAllSources>true</EmbedAllSources>
+	  <DebugType>portable</DebugType>
   </PropertyGroup>
 
   <ItemGroup>
@@ -40,7 +43,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Mtconnect.AdapterInterface" Version="2.0.0-beta.19" />
+    <PackageReference Include="Mtconnect.AdapterInterface" Version="2.0.0-beta.20" />
   </ItemGroup>
 
   <ItemGroup>
