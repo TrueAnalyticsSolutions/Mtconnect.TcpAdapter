@@ -51,7 +51,9 @@ namespace Mtconnect
         /// Reference to the connection to the <see cref="TcpClient"/>.
         /// </summary>
         private TcpClient _client { get; set; }
-
+        
+        private Task _receiverThread;
+        
         /// <summary>
         /// Reference to the underlying client stream. Note, only available between <see cref="Connect"/> and <see cref="Disconnect"/> calls.
         /// </summary>
@@ -74,7 +76,13 @@ namespace Mtconnect
             if (_stream != null) Disconnect();
 
             _stream = _client.GetStream();
-            Task.Run(() => receive());
+
+            _receiverThread = Task.Factory.StartNew(
+                receive,
+                default,
+                TaskCreationOptions.LongRunning,
+                TaskScheduler.Default
+            );
 
             if (OnConnected != null) OnConnected(this);
         }
@@ -85,6 +93,8 @@ namespace Mtconnect
         public void Disconnect(Exception ex = null)
         {
             if (_stream == null) return;
+
+            _receiverThread?.Dispose();
 
             _stream?.Close();
             _stream?.Dispose();
@@ -125,7 +135,7 @@ namespace Mtconnect
         /// <summary>
         /// Continuously reads messages from the underlying client stream.
         /// </summary>
-        private void receive()
+        private async Task receive()
         {
             Exception ex = null;
             bool heartbeatActive = false;
@@ -137,7 +147,11 @@ namespace Mtconnect
 
             while (_client.Connected)
             {
-                if (!_stream.DataAvailable) continue;
+                if (!_stream.DataAvailable)
+                {
+                    await Task.Delay(TimeSpan.FromMilliseconds(Heartbeat));
+                    continue;
+                }
 
                 int bytesRead = 0;
 

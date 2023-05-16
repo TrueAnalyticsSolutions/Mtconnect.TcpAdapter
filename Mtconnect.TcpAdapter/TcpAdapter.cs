@@ -175,7 +175,7 @@ namespace Mtconnect
         /// <summary>
         /// Listens for new TCP clients.
         /// </summary>
-        private void ListenForClients()
+        private async Task ListenForClients()
         {
             State = AdapterStates.Busy;
 
@@ -183,7 +183,11 @@ namespace Mtconnect
             {
                 while (State == AdapterStates.Busy)
                 {
-                    if (!_listener.Pending()) continue;
+                    if (!_listener.Pending())
+                    {
+                        await Task.Delay(TimeSpan.FromMilliseconds(Heartbeat));
+                        continue;
+                    }
 
                     //blocks until a kvp has connected to the server
                     var client = new TcpConnection(_listener.AcceptTcpClient(), (int)Heartbeat);
