@@ -24,11 +24,16 @@ namespace Mtconnect
         public int MaxConcurrentConnections { get; private set; }
 
         /// <summary>
+        /// Flag that indicates whether or not the TCP Adapter should automatically generate and send the Device Model to client(s).
+        /// </summary>
+        public bool SendDeviceModel { get; private set; } = false;
+
+        /// <summary>
         /// Constructs the most basic options for configuring a MTConnect Adapter.
         /// </summary>
         /// <param name="heartbeat"><inheritdoc cref="AdapterOptions.AdapterOptions" path="/param[@name='heartbeat']"/></param>
         /// <param name="port"><inheritdoc cref="TcpAdapterOptions.Port" path="/summary"/></param>
-        public TcpAdapterOptions(double heartbeat = 10_000, string address = null, int port = 7878, int maxConnections = 3) : base(heartbeat)
+        public TcpAdapterOptions(double heartbeat = 10_000, string address = null, int port = 7878, int maxConnections = 3, bool sendDeviceModel = false) : base(heartbeat)
         {
             if (!string.IsNullOrWhiteSpace(address))
             {
@@ -36,6 +41,7 @@ namespace Mtconnect
             }
             Port = port;
             MaxConcurrentConnections = maxConnections;
+            SendDeviceModel = sendDeviceModel;
         }
 
         public override Dictionary<string, object> UpdateFromConfig(ILogger logger = default)
@@ -58,6 +64,12 @@ namespace Mtconnect
             {
                 MaxConcurrentConnections = maxConnections;
                 logger?.LogDebug("Recognizing adapter option for overwriting the maximum client connections");
+            }
+
+            if (adapterSettings.ContainsKey("sendDeviceModel") && bool.TryParse(adapterSettings["sendDeviceModel"].ToString(), out bool sendDeviceModel))
+            {
+                SendDeviceModel = sendDeviceModel;
+                logger?.LogDebug("Recognizing adapter option for whether to send Device Model(s) to client(s)");
             }
 
             return adapterSettings;

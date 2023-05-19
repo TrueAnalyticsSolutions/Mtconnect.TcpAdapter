@@ -58,6 +58,16 @@ namespace Mtconnect
         private TcpListener _listener { get; set; }
 
         /// <summary>
+        /// A flag for whether or not the underlying <see cref="Adapter"/> has indicated that it received an <see cref="IAdapterDataModel"/>. This is used to determine whether or not to send a Device Model to a new connection.
+        /// </summary>
+        private bool ReceivedDataModel { get; set; }
+
+        /// <summary>
+        /// A flag indicating whether or not a Device Model should be generated and sent to client(s).
+        /// </summary>
+        private bool CanSendDataModel { get; }
+
+        /// <summary>
         /// Constructs a new <see cref="TcpAdapter"/>.
         /// </summary>
         /// <param name="options"><inheritdoc cref="TcpAdapterOptions" path="/summary"/></param>
@@ -65,7 +75,19 @@ namespace Mtconnect
         {
             Port = options.Port;
             MaxConnections = options.MaxConcurrentConnections;
+            CanSendDataModel = options.SendDeviceModel;
             _listener = new TcpListener(IPAddress.Parse(Address), Port);
+
+            base.OnDataModelRecieved += TcpAdapter_OnDataModelRecieved;
+        }
+
+        private void TcpAdapter_OnDataModelRecieved(Adapter sender, AdapterDataModelReceivedEventArgs e)
+        {
+            ReceivedDataModel = true;
+            if (CanSendDataModel)
+            {
+                Write($"{AgentCommands.DeviceModel(sender)}\n");
+            }
         }
 
         /// <inheritdoc />
@@ -212,33 +234,11 @@ namespace Mtconnect
                             client.Connect();
 
                             // Send all commands that do not result in errors
-                            Func<string>[] agentCommands = new Func<string>[]
+                            // Send AdapterVersion
+                            Write($"{AgentCommands.AdapterVersion()}\n", client.ClientId);
+                            if (ReceivedDataModel && CanSendDataModel)
                             {
-                                AgentCommands.AdapterVersion,
-                                //AgentCommands.Calibration,
-                                //AgentCommands.ConversionRequired,
-                                //AgentCommands.Device,
-                                //AgentCommands.Description,
-                                //AgentCommands.Manufacturer,
-                                //AgentCommands.MtconnectVersion,
-                                //AgentCommands.NativeName,
-                                //AgentCommands.RealTime,
-                                //AgentCommands.RelativeTime,
-                                //AgentCommands.SerialNumber,
-                                //AgentCommands.ShdrVersion,
-                                //AgentCommands.Station
-                            };
-                            foreach (var agentCommand in agentCommands)
-                            {
-                                try
-                                {
-                                    string command = agentCommand();
-                                    Write($"{command}\n", client.ClientId);
-                                }
-                                catch (Exception ex)
-                                {
-                                    Write($"{AgentCommands.Error("Unsupported command '" + agentCommand.Method.Name + "'")}\n", client.ClientId);
-                                }
+                                Write($"{AgentCommands.DeviceModel(this)}\n", client.ClientId);
                             }
 
                             // Issue command for underlying Adapter to send all DataItem current values to the newly added kvp
