@@ -6,8 +6,8 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Mtconnect.AdapterInterface.Contracts;
-using Mtconnect.AdapterInterface.DataItems;
+using Mtconnect.AdapterSdk.Contracts;
+using Mtconnect.AdapterSdk.DataItems;
 
 namespace Mtconnect
 {
