@@ -19,7 +19,7 @@
 	  <RepositoryType>git</RepositoryType>
 	  <PackageTags>Mtconnect;Adapter;TCP;TAMS;</PackageTags>
 	  <PackageReleaseNotes>Added extra logging and refined TcpConnections.</PackageReleaseNotes>
-	  <Version>2.0.0-beta.40</Version>
+	  <Version>2.0.0-beta.41</Version>
 	  <IncludeSymbols>True</IncludeSymbols>
 	  <SymbolPackageFormat>snupkg</SymbolPackageFormat>
 	  <DebugSymbols>true</DebugSymbols>
@@ -43,7 +43,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Mtconnect.AdapterSdk" Version="2.0.0-beta.54" />
+    <PackageReference Include="Mtconnect.AdapterSdk" Version="2.0.0-beta.55" />
   </ItemGroup>
 
   <ItemGroup>
