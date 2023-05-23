@@ -84,9 +84,45 @@ namespace Mtconnect
         private void TcpAdapter_OnDataModelRecieved(Adapter sender, AdapterDataModelReceivedEventArgs e)
         {
             ReceivedDataModel = true;
-            if (CanSendDataModel)
+
+            HandleDataModelChanges(sender);
+        }
+
+        /// <summary>
+        /// Sends the following Agent commands to the client(s)
+        /// <list type="bullet">
+        /// <item><c>* mtconnectVersion: XXX</c></item>
+        /// <item><c>* device: XXX</c></item>
+        /// <item><c>* serialNumber: XXX</c></item>
+        /// <item><c>* station: XXX</c></item>
+        /// <item><c>* deviceModel: ...</c>; Only if allowed based on configuration.</item>
+        /// </list>
+        /// </summary>
+        /// <param name="sender">Reference to the sending adapter</param>
+        /// <param name="clientId">Reference to a specific client to send the commands to. If <c>null</c>, then the commands are sent to all client(s).</param>
+        private void HandleDataModelChanges(Adapter sender, string clientId = null)
+        {
+            string mtcVersionCommand = AgentCommands.MtconnectVersion(sender);
+            if (!string.IsNullOrEmpty(mtcVersionCommand))
+                Write(mtcVersionCommand + "\n", clientId);
+
+            string deviceUuidCommand = AgentCommands.Device(sender);
+            if (!string.IsNullOrEmpty(deviceUuidCommand))
+                Write(deviceUuidCommand + "\n", clientId);
+
+            string serialNumberCommand = AgentCommands.SerialNumber(sender);
+            if (!string.IsNullOrEmpty(serialNumberCommand))
+                Write(serialNumberCommand + "\n", clientId);
+
+            string stationIdCommand = AgentCommands.Station(sender);
+            if (!string.IsNullOrEmpty(stationIdCommand))
+                Write(stationIdCommand + "\n", clientId);
+
+            if (ReceivedDataModel && CanSendDataModel)
             {
-                Write($"{AgentCommands.DeviceModel(sender)}\n");
+                string deviceModelCommand = AgentCommands.DeviceModel(sender);
+                if (!string.IsNullOrEmpty(deviceModelCommand))
+                    Write(deviceModelCommand + "\n", clientId);
             }
         }
 
@@ -236,10 +272,8 @@ namespace Mtconnect
                             // Send all commands that do not result in errors
                             // Send AdapterVersion
                             Write($"{AgentCommands.AdapterVersion()}\n", client.ClientId);
-                            if (ReceivedDataModel && CanSendDataModel)
-                            {
-                                Write($"{AgentCommands.DeviceModel(this)}\n", client.ClientId);
-                            }
+
+                            HandleDataModelChanges(this, client.ClientId);
 
                             // Issue command for underlying Adapter to send all DataItem current values to the newly added kvp
                             Send(DataItemSendTypes.All, client.ClientId);
