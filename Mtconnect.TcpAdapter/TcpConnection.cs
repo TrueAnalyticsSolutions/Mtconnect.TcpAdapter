@@ -158,7 +158,7 @@ namespace Mtconnect
                 readList.Clear();
                 readList.Add(_client.Client);
                 if (Heartbeat > 0 && heartbeatActive)
-                    Socket.Select(readList, null, null, (int)(Heartbeat * 2000));
+                    Socket.Select(readList, null, null, (int)(Heartbeat * 2));
                 if (readList.Count == 0 && heartbeatActive)
                 {
                     ex = new TimeoutException("Heartbeat timed out, closing connection");

@@ -118,6 +118,10 @@ namespace Mtconnect
             if (!string.IsNullOrEmpty(stationIdCommand))
                 Write(stationIdCommand + "\n", clientId);
 
+            string manufacturerCommand = AgentCommands.Manufacturer(sender);
+            if (!string.IsNullOrEmpty(manufacturerCommand))
+                Write(manufacturerCommand + "\n", clientId);
+
             if (ReceivedDataModel && CanSendDataModel)
             {
                 string deviceModelCommand = AgentCommands.DeviceModel(sender);
