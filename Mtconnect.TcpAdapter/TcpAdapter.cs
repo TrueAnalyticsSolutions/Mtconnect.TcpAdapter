@@ -102,13 +102,20 @@ namespace Mtconnect
         /// <param name="clientId">Reference to a specific client to send the commands to. If <c>null</c>, then the commands are sent to all client(s).</param>
         private void HandleDataModelChanges(Adapter sender, string clientId = null)
         {
-            string mtcVersionCommand = AgentCommands.MtconnectVersion(sender);
-            if (!string.IsNullOrEmpty(mtcVersionCommand))
-                Write(mtcVersionCommand + "\n", clientId);
-
             string deviceUuidCommand = AgentCommands.Device(sender);
             if (!string.IsNullOrEmpty(deviceUuidCommand))
                 Write(deviceUuidCommand + "\n", clientId);
+
+            if (ReceivedDataModel && CanSendDataModel)
+            {
+                string deviceModelCommand = AgentCommands.DeviceModel(sender);
+                if (!string.IsNullOrEmpty(deviceModelCommand))
+                    Write(deviceModelCommand + "\n", clientId);
+            }
+
+            string mtcVersionCommand = AgentCommands.MtconnectVersion(sender);
+            if (!string.IsNullOrEmpty(mtcVersionCommand))
+                Write(mtcVersionCommand + "\n", clientId);
 
             string serialNumberCommand = AgentCommands.SerialNumber(sender);
             if (!string.IsNullOrEmpty(serialNumberCommand))
@@ -122,12 +129,6 @@ namespace Mtconnect
             if (!string.IsNullOrEmpty(manufacturerCommand))
                 Write(manufacturerCommand + "\n", clientId);
 
-            if (ReceivedDataModel && CanSendDataModel)
-            {
-                string deviceModelCommand = AgentCommands.DeviceModel(sender);
-                if (!string.IsNullOrEmpty(deviceModelCommand))
-                    Write(deviceModelCommand + "\n", clientId);
-            }
         }
 
         /// <inheritdoc />
