@@ -113,10 +113,6 @@ namespace Mtconnect
             if (!string.IsNullOrEmpty(deviceUuidCommand))
                 Write(deviceUuidCommand + "\n", clientId);
 
-            string deviceNameCommand = AgentCommands.DeviceName(sender);
-            if (!string.IsNullOrEmpty(deviceNameCommand))
-                Write(deviceNameCommand + "\n", clientId);
-
             string mtcVersionCommand = AgentCommands.MtconnectVersion(sender);
             if (!string.IsNullOrEmpty(mtcVersionCommand))
                 Write(mtcVersionCommand + "\n", clientId);
