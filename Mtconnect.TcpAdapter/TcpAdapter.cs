@@ -102,16 +102,20 @@ namespace Mtconnect
         /// <param name="clientId">Reference to a specific client to send the commands to. If <c>null</c>, then the commands are sent to all client(s).</param>
         private void HandleDataModelChanges(Adapter sender, string clientId = null)
         {
-            string deviceUuidCommand = AgentCommands.Device(sender);
-            if (!string.IsNullOrEmpty(deviceUuidCommand))
-                Write(deviceUuidCommand + "\n", clientId);
-
             if (ReceivedDataModel && CanSendDataModel)
             {
                 string deviceModelCommand = AgentCommands.DeviceModel(sender);
                 if (!string.IsNullOrEmpty(deviceModelCommand))
                     Write(deviceModelCommand + "\n", clientId);
             }
+
+            string deviceUuidCommand = AgentCommands.DeviceUuid(sender);
+            if (!string.IsNullOrEmpty(deviceUuidCommand))
+                Write(deviceUuidCommand + "\n", clientId);
+
+            string deviceNameCommand = AgentCommands.DeviceName(sender);
+            if (!string.IsNullOrEmpty(deviceNameCommand))
+                Write(deviceNameCommand + "\n", clientId);
 
             string mtcVersionCommand = AgentCommands.MtconnectVersion(sender);
             if (!string.IsNullOrEmpty(mtcVersionCommand))
@@ -274,11 +278,12 @@ namespace Mtconnect
                             client.OnDataReceived += Client_OnReceivedData;
                             client.Connect();
 
+
                             // Send all commands that do not result in errors
+                            HandleDataModelChanges(this, client.ClientId);
+
                             // Send AdapterVersion
                             Write($"{AgentCommands.AdapterVersion()}\n", client.ClientId);
-
-                            HandleDataModelChanges(this, client.ClientId);
 
                             // Issue command for underlying Adapter to send all DataItem current values to the newly added kvp
                             Send(DataItemSendTypes.All, client.ClientId);
