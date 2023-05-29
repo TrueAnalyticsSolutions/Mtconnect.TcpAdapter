@@ -18,8 +18,8 @@
 	  <RepositoryUrl>https://github.com/TrueAnalyticsSolutions/MtconnectCore.Adapter</RepositoryUrl>
 	  <RepositoryType>git</RepositoryType>
 	  <PackageTags>Mtconnect;Adapter;TCP;TAMS;</PackageTags>
-	  <PackageReleaseNotes>Added extra logging and refined TcpConnections.</PackageReleaseNotes>
-	  <Version>2.0.0-beta.49</Version>
+	  <PackageReleaseNotes>Updated to latest AdapterSDK. Support for reference Agent SHDR commands.</PackageReleaseNotes>
+	  <Version>2.0.0</Version>
 	  <IncludeSymbols>True</IncludeSymbols>
 	  <SymbolPackageFormat>snupkg</SymbolPackageFormat>
 	  <DebugSymbols>true</DebugSymbols>
@@ -43,7 +43,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Mtconnect.AdapterSdk" Version="2.0.0-beta.61" />
+    <PackageReference Include="Mtconnect.AdapterSdk" Version="2.0.0" />
   </ItemGroup>
 
   <ItemGroup>
