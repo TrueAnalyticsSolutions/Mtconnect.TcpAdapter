@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.Net;
 using System;
-using Mtconnect.AdapterInterface.UPnP;
+using Mtconnect.AdapterSdk.UPnP;
 
 namespace Mtconnect.UPnP
 {

@@ -6,8 +6,8 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Mtconnect.AdapterInterface.Contracts;
-using Mtconnect.AdapterInterface.DataItems;
+using Mtconnect.AdapterSdk.Contracts;
+using Mtconnect.AdapterSdk.DataItems;
 
 namespace Mtconnect
 {
@@ -58,6 +58,16 @@ namespace Mtconnect
         private TcpListener _listener { get; set; }
 
         /// <summary>
+        /// A flag for whether or not the underlying <see cref="Adapter"/> has indicated that it received an <see cref="IAdapterDataModel"/>. This is used to determine whether or not to send a Device Model to a new connection.
+        /// </summary>
+        private bool ReceivedDataModel { get; set; }
+
+        /// <summary>
+        /// A flag indicating whether or not a Device Model should be generated and sent to client(s).
+        /// </summary>
+        private bool CanSendDataModel { get; }
+
+        /// <summary>
         /// Constructs a new <see cref="TcpAdapter"/>.
         /// </summary>
         /// <param name="options"><inheritdoc cref="TcpAdapterOptions" path="/summary"/></param>
@@ -65,7 +75,60 @@ namespace Mtconnect
         {
             Port = options.Port;
             MaxConnections = options.MaxConcurrentConnections;
+            CanSendDataModel = options.SendDeviceModel;
             _listener = new TcpListener(IPAddress.Parse(Address), Port);
+
+            base.OnDataModelRecieved += TcpAdapter_OnDataModelRecieved;
+        }
+
+        private void TcpAdapter_OnDataModelRecieved(Adapter sender, AdapterDataModelReceivedEventArgs e)
+        {
+            ReceivedDataModel = true;
+
+            HandleDataModelChanges(sender);
+        }
+
+        /// <summary>
+        /// Sends the following Agent commands to the client(s)
+        /// <list type="bullet">
+        /// <item><c>* mtconnectVersion: XXX</c></item>
+        /// <item><c>* device: XXX</c></item>
+        /// <item><c>* serialNumber: XXX</c></item>
+        /// <item><c>* station: XXX</c></item>
+        /// <item><c>* deviceModel: ...</c>; Only if allowed based on configuration.</item>
+        /// </list>
+        /// </summary>
+        /// <param name="sender">Reference to the sending adapter</param>
+        /// <param name="clientId">Reference to a specific client to send the commands to. If <c>null</c>, then the commands are sent to all client(s).</param>
+        private void HandleDataModelChanges(Adapter sender, string clientId = null)
+        {
+            if (ReceivedDataModel && CanSendDataModel)
+            {
+                string deviceModelCommand = AgentCommands.DeviceModel(sender);
+                if (!string.IsNullOrEmpty(deviceModelCommand))
+                    Write(deviceModelCommand + "\n", clientId);
+            }
+
+            string deviceUuidCommand = AgentCommands.DeviceUuid(sender);
+            if (!string.IsNullOrEmpty(deviceUuidCommand))
+                Write(deviceUuidCommand + "\n", clientId);
+
+            string mtcVersionCommand = AgentCommands.MtconnectVersion(sender);
+            if (!string.IsNullOrEmpty(mtcVersionCommand))
+                Write(mtcVersionCommand + "\n", clientId);
+
+            string serialNumberCommand = AgentCommands.SerialNumber(sender);
+            if (!string.IsNullOrEmpty(serialNumberCommand))
+                Write(serialNumberCommand + "\n", clientId);
+
+            string stationIdCommand = AgentCommands.Station(sender);
+            if (!string.IsNullOrEmpty(stationIdCommand))
+                Write(stationIdCommand + "\n", clientId);
+
+            string manufacturerCommand = AgentCommands.Manufacturer(sender);
+            if (!string.IsNullOrEmpty(manufacturerCommand))
+                Write(manufacturerCommand + "\n", clientId);
+
         }
 
         /// <inheritdoc />
@@ -175,7 +238,7 @@ namespace Mtconnect
         /// <summary>
         /// Listens for new TCP clients.
         /// </summary>
-        private void ListenForClients()
+        private async Task ListenForClients()
         {
             State = AdapterStates.Busy;
 
@@ -183,7 +246,11 @@ namespace Mtconnect
             {
                 while (State == AdapterStates.Busy)
                 {
-                    if (!_listener.Pending()) continue;
+                    if (!_listener.Pending())
+                    {
+                        await Task.Delay(TimeSpan.FromMilliseconds(Heartbeat));
+                        continue;
+                    }
 
                     //blocks until a kvp has connected to the server
                     var client = new TcpConnection(_listener.AcceptTcpClient(), (int)Heartbeat);
@@ -207,35 +274,12 @@ namespace Mtconnect
                             client.OnDataReceived += Client_OnReceivedData;
                             client.Connect();
 
+
                             // Send all commands that do not result in errors
-                            Func<string>[] agentCommands = new Func<string>[]
-                            {
-                                AgentCommands.AdapterVersion,
-                                //AgentCommands.Calibration,
-                                //AgentCommands.ConversionRequired,
-                                //AgentCommands.Device,
-                                //AgentCommands.Description,
-                                //AgentCommands.Manufacturer,
-                                //AgentCommands.MtconnectVersion,
-                                //AgentCommands.NativeName,
-                                //AgentCommands.RealTime,
-                                //AgentCommands.RelativeTime,
-                                //AgentCommands.SerialNumber,
-                                //AgentCommands.ShdrVersion,
-                                //AgentCommands.Station
-                            };
-                            foreach (var agentCommand in agentCommands)
-                            {
-                                try
-                                {
-                                    string command = agentCommand();
-                                    Write($"{command}\n", client.ClientId);
-                                }
-                                catch (Exception ex)
-                                {
-                                    Write($"{AgentCommands.Error("Unsupported command '" + agentCommand.Method.Name + "'")}\n", client.ClientId);
-                                }
-                            }
+                            HandleDataModelChanges(this, client.ClientId);
+
+                            // Send AdapterVersion
+                            Write($"{AgentCommands.AdapterVersion()}\n", client.ClientId);
 
                             // Issue command for underlying Adapter to send all DataItem current values to the newly added kvp
                             Send(DataItemSendTypes.All, client.ClientId);
