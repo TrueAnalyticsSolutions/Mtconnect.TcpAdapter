@@ -1,0 +1,216 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Mtconnect.TcpAdapter</name>
+    </assembly>
+    <members>
+        <member name="T:Mtconnect.TcpAdapter">
+            <summary>
+            An implementation of a MTConnect Adapter that publishes data thru a TCP stream.
+            </summary>
+        </member>
+        <member name="E:Mtconnect.TcpAdapter.ClientDataReceived">
+            <summary>
+            Event that fires when a response is received from a <see cref="T:Mtconnect.TcpConnection"/>.
+            </summary>
+        </member>
+        <member name="P:Mtconnect.TcpAdapter.Port">
+            <summary>
+            The Port property to set and get the mPort. This will only take affect when the adapter is stopped.
+            </summary>
+        </member>
+        <member name="P:Mtconnect.TcpAdapter.MaxConnections">
+            <summary>
+            The maximum number of kvp connections allowed to exist at any given point.
+            </summary>
+        </member>
+        <member name="F:Mtconnect.TcpAdapter._listenerThread">
+            <summary>
+            The listening thread for new connections
+            </summary>
+        </member>
+        <member name="P:Mtconnect.TcpAdapter._clients">
+            <summary>
+            A list of all the kvp connections.
+            </summary>
+        </member>
+        <member name="P:Mtconnect.TcpAdapter.CurrentConnections">
+            <summary>
+            A count of how many clients are currently connected to the TCP listener.
+            </summary>
+        </member>
+        <member name="P:Mtconnect.TcpAdapter._listener">
+            <summary>
+            The server socket.
+            </summary>
+        </member>
+        <member name="P:Mtconnect.TcpAdapter.ReceivedDataModel">
+            <summary>
+            A flag for whether or not the underlying <see cref="T:Mtconnect.Adapter"/> has indicated that it received an <see cref="T:Mtconnect.IAdapterDataModel"/>. This is used to determine whether or not to send a Device Model to a new connection.
+            </summary>
+        </member>
+        <member name="P:Mtconnect.TcpAdapter.CanSendDataModel">
+            <summary>
+            A flag indicating whether or not a Device Model should be generated and sent to client(s).
+            </summary>
+        </member>
+        <member name="M:Mtconnect.TcpAdapter.#ctor(Mtconnect.TcpAdapterOptions,Microsoft.Extensions.Logging.ILoggerFactory)">
+            <summary>
+            Constructs a new <see cref="T:Mtconnect.TcpAdapter"/>.
+            </summary>
+            <param name="options"><inheritdoc cref="T:Mtconnect.TcpAdapterOptions" path="/summary"/></param>
+        </member>
+        <member name="M:Mtconnect.TcpAdapter.HandleDataModelChanges(Mtconnect.Adapter,System.String)">
+            <summary>
+            Sends the following Agent commands to the client(s)
+            <list type="bullet">
+            <item><c>* mtconnectVersion: XXX</c></item>
+            <item><c>* device: XXX</c></item>
+            <item><c>* serialNumber: XXX</c></item>
+            <item><c>* station: XXX</c></item>
+            <item><c>* deviceModel: ...</c>; Only if allowed based on configuration.</item>
+            </list>
+            </summary>
+            <param name="sender">Reference to the sending adapter</param>
+            <param name="clientId">Reference to a specific client to send the commands to. If <c>null</c>, then the commands are sent to all client(s).</param>
+        </member>
+        <member name="M:Mtconnect.TcpAdapter.Start(System.Boolean,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Mtconnect.TcpAdapter.Stop(System.Exception)">
+            <inheritdoc />
+        </member>
+        <member name="M:Mtconnect.TcpAdapter.Send(Mtconnect.AdapterSdk.Contracts.DataItemSendTypes,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:Mtconnect.TcpAdapter.Write(System.String,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:Mtconnect.TcpAdapter.FlushAll">
+            <summary>
+            Flush all the communications to all the clients
+            TODO: Exception handling.
+            </summary>
+        </member>
+        <member name="M:Mtconnect.TcpAdapter.ListenForClients">
+            <summary>
+            Listens for new TCP clients.
+            </summary>
+        </member>
+        <member name="M:Mtconnect.TcpAdapter.Client_OnReceivedData(Mtconnect.TcpConnection,System.String)">
+            <summary>
+            ReceiveClient data from a kvp and implement heartbeat ping/pong protocol.
+            </summary>
+        </member>
+        <member name="T:Mtconnect.TcpAdapterOptions">
+            <summary>
+            Configuration options for a <see cref="T:Mtconnect.TcpAdapter"/>.
+            </summary>
+        </member>
+        <member name="P:Mtconnect.TcpAdapterOptions.Port">
+            <summary>
+            The port for which the Adapter should stream data thru.
+            </summary>
+        </member>
+        <member name="P:Mtconnect.TcpAdapterOptions.MaxConcurrentConnections">
+            <summary>
+            The maximum number of connections allowed at any given point.
+            </summary>
+        </member>
+        <member name="P:Mtconnect.TcpAdapterOptions.SendDeviceModel">
+            <summary>
+            Flag that indicates whether or not the TCP Adapter should automatically generate and send the Device Model to client(s).
+            </summary>
+        </member>
+        <member name="M:Mtconnect.TcpAdapterOptions.#ctor(System.Double,System.String,System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Constructs the most basic options for configuring a MTConnect Adapter.
+            </summary>
+            <param name="heartbeat"><inheritdoc cref="M:Mtconnect.AdapterSdk.AdapterOptions.#ctor(System.Double,System.Boolean,System.Boolean)" path="/param[@name='heartbeat']"/></param>
+            <param name="port"><inheritdoc cref="P:Mtconnect.TcpAdapterOptions.Port" path="/summary"/></param>
+        </member>
+        <member name="E:Mtconnect.TcpConnection.OnConnected">
+            <summary>
+            An event that fires when the underlying client stream is opened and connected.
+            </summary>
+        </member>
+        <member name="E:Mtconnect.TcpConnection.OnDisconnected">
+            <summary>
+            An event that fires when the underlying client stream is closed and disconnected.
+            </summary>
+        </member>
+        <member name="E:Mtconnect.TcpConnection.OnDataReceived">
+            <summary>
+            An event that fires when data is fully parsed from the underlying client stream. Note that a new line is used to determine the end of a full message.
+            </summary>
+        </member>
+        <member name="F:Mtconnect.TcpConnection.BUFFER_SIZE">
+            <summary>
+            Maximum amount of binary data to receive at a time.
+            </summary>
+        </member>
+        <member name="P:Mtconnect.TcpConnection.ClientId">
+            <summary>
+            Reference to the <see cref="T:System.Net.Sockets.TcpClient"/> address.
+            </summary>
+        </member>
+        <member name="P:Mtconnect.TcpConnection.Heartbeat">
+            <summary>
+            The period of time (in milliseconds) to timeout stream reading.
+            </summary>
+        </member>
+        <member name="P:Mtconnect.TcpConnection._client">
+            <summary>
+            Reference to the connection to the <see cref="T:System.Net.Sockets.TcpClient"/>.
+            </summary>
+        </member>
+        <member name="P:Mtconnect.TcpConnection._stream">
+            <summary>
+            Reference to the underlying client stream. Note, only available between <see cref="M:Mtconnect.TcpConnection.Connect"/> and <see cref="M:Mtconnect.TcpConnection.Disconnect(System.Exception)"/> calls.
+            </summary>
+        </member>
+        <member name="M:Mtconnect.TcpConnection.Connect">
+            <summary>
+            Connects the underlying client stream and begins receiving data.
+            </summary>
+        </member>
+        <member name="M:Mtconnect.TcpConnection.Disconnect(System.Exception)">
+            <summary>
+            Disconnects the underlying client stream and disposes of it. Note that this leaves the connection to the TCP client alone.
+            </summary>
+        </member>
+        <member name="M:Mtconnect.TcpConnection.Write(System.String)">
+            <summary>
+            Writes a message to the underlying client stream.
+            </summary>
+            <param name="message">Message to send.</param>
+        </member>
+        <member name="M:Mtconnect.TcpConnection.Write(System.Byte[])">
+            <summary>
+            Writes a binary message to the underlying client stream.
+            </summary>
+            <param name="message">Message to send.</param>
+        </member>
+        <member name="M:Mtconnect.TcpConnection.Flush">
+            <summary>
+            Flushes the underlying client stream.
+            </summary>
+        </member>
+        <member name="M:Mtconnect.TcpConnection.receive">
+            <summary>
+            Continuously reads messages from the underlying client stream.
+            </summary>
+        </member>
+        <member name="T:Mtconnect.UPnP.TcpUPnPService">
+            <inheritdoc />
+        </member>
+        <member name="M:Mtconnect.UPnP.TcpUPnPService.#ctor(Mtconnect.TcpAdapter,System.Double,System.String,System.Int32,Microsoft.Extensions.Logging.ILoggerFactory)">
+            <inheritdoc cref="M:Mtconnect.AdapterSdk.UPnP.UPnPService`1.#ctor(`0,System.Double,System.String,System.Int32,Microsoft.Extensions.Logging.ILoggerFactory)"/>
+            <param name="adapter">Reference to a <see cref="T:Mtconnect.TcpAdapter"/> instance.</param>
+            <param name="broadcastRate"><inheritdoc cref="M:Mtconnect.AdapterSdk.UPnP.UPnPService`1.#ctor(`0,System.Double,System.String,System.Int32,Microsoft.Extensions.Logging.ILoggerFactory)" path="[@name='broadcastRate']"/></param>
+            <param name="address"><inheritdoc cref="M:Mtconnect.AdapterSdk.UPnP.UPnPService`1.#ctor(`0,System.Double,System.String,System.Int32,Microsoft.Extensions.Logging.ILoggerFactory)" path="[@name='address']"/></param>
+            <param name="port"><inheritdoc cref="M:Mtconnect.AdapterSdk.UPnP.UPnPService`1.#ctor(`0,System.Double,System.String,System.Int32,Microsoft.Extensions.Logging.ILoggerFactory)" path="[@name='port']"/></param>
+            <param name="logFactory"><inheritdoc cref="M:Mtconnect.AdapterSdk.UPnP.UPnPService`1.#ctor(`0,System.Double,System.String,System.Int32,Microsoft.Extensions.Logging.ILoggerFactory)" path="[@name='logFactory']"/></param>
+        </member>
+    </members>
+</doc>

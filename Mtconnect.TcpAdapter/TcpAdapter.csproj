@@ -19,16 +19,25 @@
 	  <RepositoryType>git</RepositoryType>
 	  <PackageTags>Mtconnect;Adapter;TCP;TAMS;</PackageTags>
 	  <PackageReleaseNotes>Updated to latest AdapterSDK. Support for reference Agent SHDR commands.</PackageReleaseNotes>
-	  <Version>2.0.1</Version>
+	  <Version>2.0.2</Version>
 	  <IncludeSymbols>True</IncludeSymbols>
 	  <SymbolPackageFormat>snupkg</SymbolPackageFormat>
 	  <DebugSymbols>true</DebugSymbols>
 	  <EmbedAllSources>true</EmbedAllSources>
 	  <DebugType>portable</DebugType>
+	  <DocumentationFile>$(AssemblyName).xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Mtconnect.TcpAdapter.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="icon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Mtconnect.TcpAdapter.xml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -43,7 +52,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Mtconnect.AdapterSdk" Version="2.0.1" />
+    <PackageReference Include="Mtconnect.AdapterSdk" Version="2.0.2" />
   </ItemGroup>
 
   <ItemGroup>
