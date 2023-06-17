@@ -107,6 +107,11 @@
             Configuration options for a <see cref="T:Mtconnect.TcpAdapter"/>.
             </summary>
         </member>
+        <member name="P:Mtconnect.TcpAdapterOptions.Address">
+            <summary>
+            The IP Address for which the Adapter should stream data thru.
+            </summary>
+        </member>
         <member name="P:Mtconnect.TcpAdapterOptions.Port">
             <summary>
             The port for which the Adapter should stream data thru.
@@ -127,7 +132,13 @@
             Constructs the most basic options for configuring a MTConnect Adapter.
             </summary>
             <param name="heartbeat"><inheritdoc cref="M:Mtconnect.AdapterSdk.AdapterOptions.#ctor(System.Double,System.Boolean,System.Boolean)" path="/param[@name='heartbeat']"/></param>
+            <param name="address"><inheritdoc cref="P:Mtconnect.TcpAdapterOptions.Address" path="/summary"/></param>
             <param name="port"><inheritdoc cref="P:Mtconnect.TcpAdapterOptions.Port" path="/summary"/></param>
+            <param name="maxConnections"><inheritdoc cref="P:Mtconnect.TcpAdapterOptions.MaxConcurrentConnections" path="/summary"/></param>
+            <param name="sendDeviceModel"><inheritdoc cref="P:Mtconnect.TcpAdapterOptions.SendDeviceModel" path="/summary"/></param>
+        </member>
+        <member name="M:Mtconnect.TcpAdapterOptions.UpdateFromConfig(Microsoft.Extensions.Logging.ILogger)">
+            <inheritdoc />
         </member>
         <member name="E:Mtconnect.TcpConnection.OnConnected">
             <summary>
@@ -168,6 +179,13 @@
             <summary>
             Reference to the underlying client stream. Note, only available between <see cref="M:Mtconnect.TcpConnection.Connect"/> and <see cref="M:Mtconnect.TcpConnection.Disconnect(System.Exception)"/> calls.
             </summary>
+        </member>
+        <member name="M:Mtconnect.TcpConnection.#ctor(System.Net.Sockets.TcpClient,System.Int32)">
+            <summary>
+            Constructs a new TCP connection
+            </summary>
+            <param name="client"><inheritdoc cref="T:System.Net.Sockets.TcpClient" path="/summary"/></param>
+            <param name="heartbeat"><inheritdoc cref="P:Mtconnect.TcpConnection.Heartbeat" path="/summary"/></param>
         </member>
         <member name="M:Mtconnect.TcpConnection.Connect">
             <summary>
@@ -211,6 +229,9 @@
             <param name="address"><inheritdoc cref="M:Mtconnect.AdapterSdk.UPnP.UPnPService`1.#ctor(`0,System.Double,System.String,System.Int32,Microsoft.Extensions.Logging.ILoggerFactory)" path="[@name='address']"/></param>
             <param name="port"><inheritdoc cref="M:Mtconnect.AdapterSdk.UPnP.UPnPService`1.#ctor(`0,System.Double,System.String,System.Int32,Microsoft.Extensions.Logging.ILoggerFactory)" path="[@name='port']"/></param>
             <param name="logFactory"><inheritdoc cref="M:Mtconnect.AdapterSdk.UPnP.UPnPService`1.#ctor(`0,System.Double,System.String,System.Int32,Microsoft.Extensions.Logging.ILoggerFactory)" path="[@name='logFactory']"/></param>
+        </member>
+        <member name="M:Mtconnect.UPnP.TcpUPnPService.ConstructDescription">
+            <inheritdoc />
         </member>
     </members>
 </doc>

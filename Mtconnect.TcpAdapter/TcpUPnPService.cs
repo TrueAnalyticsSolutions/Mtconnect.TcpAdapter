@@ -16,6 +16,7 @@ namespace Mtconnect.UPnP
         /// <param name="logFactory"><inheritdoc cref="UPnPService{T}.UPnPService(T, double, string, int, ILoggerFactory)" path="[@name='logFactory']"/></param>
         public TcpUPnPService(TcpAdapter adapter, double broadcastRate = DEFAULT_BROADCAST_RATE, string address = DEFAULT_UPnP_ADDRESS, int port = DEFAULT_UPnP_PORT, ILoggerFactory logFactory = default) : base(adapter, broadcastRate, address, port, logFactory) { }
 
+        /// <inheritdoc />
         protected override UPnPDeviceServiceModel ConstructDescription()
         {
             var model = base.ConstructDescription();

@@ -59,6 +59,11 @@ namespace Mtconnect
         /// </summary>
         private NetworkStream _stream { get; set; }
 
+        /// <summary>
+        /// Constructs a new TCP connection
+        /// </summary>
+        /// <param name="client"><inheritdoc cref="TcpClient" path="/summary"/></param>
+        /// <param name="heartbeat"><inheritdoc cref="Heartbeat" path="/summary"/></param>
         public TcpConnection(TcpClient client, int heartbeat = 1000)
         {
             _client = client;

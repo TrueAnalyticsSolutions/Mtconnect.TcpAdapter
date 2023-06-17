@@ -11,6 +11,9 @@ namespace Mtconnect
     /// </summary>
     public sealed class TcpAdapterOptions : AdapterOptions
     {
+        /// <summary>
+        /// The IP Address for which the Adapter should stream data thru.
+        /// </summary>
         public string Address { get; private set; } = IPAddress.Any.ToString();
 
         /// <summary>
@@ -32,7 +35,10 @@ namespace Mtconnect
         /// Constructs the most basic options for configuring a MTConnect Adapter.
         /// </summary>
         /// <param name="heartbeat"><inheritdoc cref="AdapterOptions.AdapterOptions" path="/param[@name='heartbeat']"/></param>
+        /// <param name="address"><inheritdoc cref="Address" path="/summary"/></param>
         /// <param name="port"><inheritdoc cref="TcpAdapterOptions.Port" path="/summary"/></param>
+        /// <param name="maxConnections"><inheritdoc cref="MaxConcurrentConnections" path="/summary"/></param>
+        /// <param name="sendDeviceModel"><inheritdoc cref="SendDeviceModel" path="/summary"/></param>
         public TcpAdapterOptions(double heartbeat = 10_000, string address = null, int port = 7878, int maxConnections = 3, bool sendDeviceModel = false) : base(heartbeat)
         {
             if (!string.IsNullOrWhiteSpace(address))
@@ -44,6 +50,7 @@ namespace Mtconnect
             SendDeviceModel = sendDeviceModel;
         }
 
+        /// <inheritdoc />
         public override Dictionary<string, object> UpdateFromConfig(ILogger logger = default)
         {
             var adapterSettings = base.UpdateFromConfig(logger);
