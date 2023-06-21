@@ -267,7 +267,7 @@ namespace Mtconnect
 
                     if (!_clients.ContainsKey(client.ClientId))
                     {
-                        _logger?.LogInformation("New client connection '{ClientId}'", client.ClientId);
+                        _logger?.LogInformation("New client connection '{ClientId}' ({ActiveConnections}/{MaxConnections})", client.ClientId, _clients.Count, MaxConnections);
                         if (_clients.TryAdd(client.ClientId, client))
                         {
                             client.OnDisconnected += Client_OnConnectionDisconnected;
