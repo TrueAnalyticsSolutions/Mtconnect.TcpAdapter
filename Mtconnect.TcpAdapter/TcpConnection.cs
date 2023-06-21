@@ -104,14 +104,34 @@ namespace Mtconnect
             _disconnecting = true;
             if (_stream == null) return;
 
-            _receiverSource?.Cancel();
-            _receiverThread?.Dispose();
-            _receiverSource?.Dispose();
-            _receiverSource = null;
+            try
+            {
+                _receiverSource?.Cancel();
+                _receiverSource?.Dispose();
+                _receiverSource = null;
+            }
+            catch (Exception cancellationException)
+            {
+            }
 
-            _stream?.Close();
-            _stream?.Dispose();
-            _stream = null;
+            try
+            {
+                _receiverThread?.Dispose();
+                _receiverThread = null;
+            }
+            catch (Exception receiverException)
+            {
+            }
+
+            try
+            {
+                _stream?.Close();
+                _stream?.Dispose();
+                _stream = null;
+            }
+            catch (Exception streamException)
+            {
+            }
 
             if (!_disposing && OnDisconnected != null) OnDisconnected(this, ex);
             _disconnecting = false;
