@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Security.Policy;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Mtconnect
@@ -14,6 +15,7 @@ namespace Mtconnect
     public class TcpConnection : IDisposable
     {
         private bool _disposing { get; set; } = false;
+        private bool _disconnecting { get; set; } = false;
 
         /// <summary>
         /// An event that fires when the underlying client stream is opened and connected.
@@ -53,6 +55,7 @@ namespace Mtconnect
         private TcpClient _client { get; set; }
         
         private Task _receiverThread;
+        private CancellationTokenSource _receiverSource;
         
         /// <summary>
         /// Reference to the underlying client stream. Note, only available between <see cref="Connect"/> and <see cref="Disconnect"/> calls.
@@ -82,9 +85,10 @@ namespace Mtconnect
 
             _stream = _client.GetStream();
 
+            _receiverSource = new CancellationTokenSource();
             _receiverThread = Task.Factory.StartNew(
                 receive,
-                default,
+                _receiverSource.Token,
                 TaskCreationOptions.LongRunning,
                 TaskScheduler.Default
             );
@@ -97,15 +101,20 @@ namespace Mtconnect
         /// </summary>
         public void Disconnect(Exception ex = null)
         {
+            _disconnecting = true;
             if (_stream == null) return;
 
+            _receiverSource?.Cancel();
             _receiverThread?.Dispose();
+            _receiverSource?.Dispose();
+            _receiverSource = null;
 
             _stream?.Close();
             _stream?.Dispose();
             _stream = null;
 
             if (!_disposing && OnDisconnected != null) OnDisconnected(this, ex);
+            _disconnecting = false;
         }
 
         /// <summary>
@@ -150,7 +159,7 @@ namespace Mtconnect
 
             ArrayList readList = new ArrayList();
 
-            while (_client.Connected)
+            while (_client.Connected && !_disconnecting)
             {
                 if (!_stream.DataAvailable)
                 {
@@ -205,8 +214,8 @@ namespace Mtconnect
         public void Dispose()
         {
             _disposing = true;
-            _client?.Dispose();
             Disconnect();
+            _client?.Dispose();
             _disposing = false;
         }
     }

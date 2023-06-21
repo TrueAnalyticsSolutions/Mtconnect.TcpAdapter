@@ -320,7 +320,7 @@ namespace Mtconnect
         {
             if (!_clients.ContainsKey(connection.ClientId))
             {
-                _logger?.LogWarning("Client '{ClientId}' is not tracked", connection.ClientId);
+                _logger?.LogWarning("Client '{ClientId}' could not be disconnected because it is not currently tracked", connection.ClientId);
                 return;
             }
 
@@ -328,17 +328,21 @@ namespace Mtconnect
             {
                 if (ex == null)
                 {
-                    _logger?.LogInformation("Client disconnected '{ClientId}'", connection.ClientId);
+                    _logger?.LogDebug("Client disconnecting '{ClientId}'", connection.ClientId);
                 } else
                 {
-                    _logger?.LogError("Client '{ClientId}' disconnected due to error: \r\n\t{Error}", connection.ClientId, ex);
+                    _logger?.LogError("Client '{ClientId}' disconnecting due to error: \r\n\t{Error}", connection.ClientId, ex);
                 }
                 if (_clients.TryRemove(connection.ClientId, out TcpConnection client))
                 {
+                    _logger?.LogInformation("Client '{ClientId}' disconnected", connection.ClientId);
                     if (_clients.Count == 0)
                     {
                         _logger?.LogInformation("No clients connected");
                     }
+                } else
+                {
+                    _logger?.LogWarning("Client '{ClientId}' failed to disconnect and may still linger", connection.ClientId);
                 }
             }
         }
