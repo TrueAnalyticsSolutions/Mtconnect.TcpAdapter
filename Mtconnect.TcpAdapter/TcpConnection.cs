@@ -101,6 +101,9 @@ namespace Mtconnect
         /// </summary>
         public void Disconnect(Exception ex = null)
         {
+            if (_disconnecting)
+                return;
+
             _disconnecting = true;
             if (_stream == null) return;
 
@@ -130,6 +133,15 @@ namespace Mtconnect
                 _stream = null;
             }
             catch (Exception streamException)
+            {
+            }
+
+            try
+            {
+                _client?.Close();
+                _client = null;
+            }
+            catch (Exception clientException)
             {
             }
 
@@ -179,8 +191,10 @@ namespace Mtconnect
 
             ArrayList readList = new ArrayList();
 
-            while (_client.Connected && !_disconnecting)
+            while (_client.Connected)
             {
+                if (_disconnecting)
+                    break;
                 if (!_stream.DataAvailable)
                 {
                     await Task.Delay(TimeSpan.FromMilliseconds(Heartbeat));
