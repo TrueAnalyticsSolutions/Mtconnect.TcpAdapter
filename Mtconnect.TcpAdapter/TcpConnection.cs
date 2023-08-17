@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections;
 using System.Net;
 using System.Net.Sockets;
@@ -62,17 +63,23 @@ namespace Mtconnect
         /// </summary>
         private NetworkStream _stream { get; set; }
 
+        //
+        // Summary:
+        //     Reference to a logging service.
+        public readonly ILogger<Adapter> _logger;
+
         /// <summary>
         /// Constructs a new TCP connection
         /// </summary>
         /// <param name="client"><inheritdoc cref="TcpClient" path="/summary"/></param>
         /// <param name="heartbeat"><inheritdoc cref="Heartbeat" path="/summary"/></param>
-        public TcpConnection(TcpClient client, int heartbeat = 1000)
+        public TcpConnection(TcpClient client, int heartbeat = 1000, ILogger<Adapter> logger = default)
         {
             _client = client;
             Heartbeat = heartbeat;
             IPEndPoint clientIp = (IPEndPoint)_client.Client.RemoteEndPoint;
             ClientId = $"{clientIp.Address}:{clientIp.Port}";
+            _logger = logger;
         }
 
         /// <summary>
@@ -101,10 +108,18 @@ namespace Mtconnect
         /// </summary>
         public void Disconnect(Exception ex = null)
         {
+            _logger?.LogDebug("In Disconnect Method");
             _disconnecting = true;
 
-            if (!_disposing && OnDisconnected != null) 
+            if (!_disposing && OnDisconnected != null)
+            {
+                _logger?.LogDebug("Executing OnDisconnect");
                 OnDisconnected(this, ex);
+            }
+            else
+            {
+                _logger?.LogDebug("Didn't OnDisconnect. _disposing = " + _disposing.ToString());
+            }
             
             //if (_stream == null) return;
 
@@ -189,9 +204,10 @@ namespace Mtconnect
             int length = 0;
 
             ArrayList readList = new ArrayList();
-
+            _logger.LogDebug("Client: {clientId} is entering while loop (receive method).", this.ClientId);
             while (_client.Connected)
             {
+
                 if (_disconnecting)
                     break;
                 if (!_stream.DataAvailable)
@@ -240,7 +256,7 @@ namespace Mtconnect
                         Array.Copy(message, eol, message, 0, length);
                 }
             }
-
+            _logger.LogDebug("Client: {clientId} is disconnecting.", this.ClientId);
             Disconnect(ex);
         }
 
