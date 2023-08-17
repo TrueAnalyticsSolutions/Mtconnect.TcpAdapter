@@ -205,6 +205,9 @@ namespace Mtconnect
 
             ArrayList readList = new ArrayList();
             _logger.LogDebug("Client: {clientId} is entering while loop (receive method).", this.ClientId);
+
+            // Warning -> the property TcpClient.Connected doesn't reliably
+            // reflect the real-time status of the socket
             while (_client.Connected)
             {
 
@@ -228,6 +231,13 @@ namespace Mtconnect
                     break;
                 }
                 bytesRead = _stream.Read(message, length, BUFFER_SIZE - length);
+                // Added a check to see if bytesRead is 0. This more reliably reflects the state of the connection.
+                // if bytesRead is 0 the client has gracefully disconnected.
+                if(bytesRead == 0)
+                {
+                    _logger.LogDebug("Client: {clientId} is exiting while loop. bytesRead was 0.", this.ClientId);
+                    break;
+                }
 
                 // See if we have a line
                 int pos = length;
