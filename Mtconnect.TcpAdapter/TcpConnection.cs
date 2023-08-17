@@ -101,11 +101,12 @@ namespace Mtconnect
         /// </summary>
         public void Disconnect(Exception ex = null)
         {
-            if (_disconnecting)
-                return;
-
             _disconnecting = true;
-            if (_stream == null) return;
+
+            if (!_disposing && OnDisconnected != null) 
+                OnDisconnected(this, ex);
+            
+            //if (_stream == null) return;
 
             try
             {
@@ -144,8 +145,6 @@ namespace Mtconnect
             catch (Exception clientException)
             {
             }
-
-            if (!_disposing && OnDisconnected != null) OnDisconnected(this, ex);
             _disconnecting = false;
         }
 
