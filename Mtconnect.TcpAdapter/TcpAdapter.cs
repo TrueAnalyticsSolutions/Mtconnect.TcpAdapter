@@ -253,7 +253,7 @@ namespace Mtconnect
                     }
 
                     //blocks until a kvp has connected to the server
-                    var client = new TcpConnection(_listener.AcceptTcpClient(), (int)Heartbeat);
+                    var client = new TcpConnection(_listener.AcceptTcpClient(), (int)Heartbeat, _logger);
                     if (_clients.Count >= MaxConnections)
                     {
                         _logger?.LogWarning(
