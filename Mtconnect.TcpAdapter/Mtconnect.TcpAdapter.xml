@@ -180,7 +180,7 @@
             Reference to the underlying client stream. Note, only available between <see cref="M:Mtconnect.TcpConnection.Connect"/> and <see cref="M:Mtconnect.TcpConnection.Disconnect(System.Exception)"/> calls.
             </summary>
         </member>
-        <member name="M:Mtconnect.TcpConnection.#ctor(System.Net.Sockets.TcpClient,System.Int32)">
+        <member name="M:Mtconnect.TcpConnection.#ctor(System.Net.Sockets.TcpClient,System.Int32,Microsoft.Extensions.Logging.ILogger)">
             <summary>
             Constructs a new TCP connection
             </summary>
