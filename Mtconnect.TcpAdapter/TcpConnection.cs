@@ -239,7 +239,7 @@ namespace Mtconnect
                 if ((DateTime.UtcNow - LastRead) >= timeout)
                 {
                     // Try to send a ping
-                    if (!Write("\n"))
+                    if (!Write(new byte[] { 0x00 }))
                     {
                         _logger?.LogDebug("Client {clientId} breaking connection due to timeout", ClientId);
                         ex = new TimeoutException("TcpConnection heartbeat timed out");

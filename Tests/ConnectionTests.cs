@@ -46,8 +46,9 @@ namespace Tests
                     {
                         if (stream.DataAvailable)
                         {
-                            string receivedData = reader.ReadLine();
-                            Console.WriteLine($"Received: {receivedData}");
+                            char[] buffer = new char[1024];
+                            int receivedData = reader.Read(buffer, 0, 1024);
+                            Console.WriteLine($"Received: {new string(buffer)}");
                         }
                     }
                     Assert.AreEqual(1, adapter.CurrentConnections);
