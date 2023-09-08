@@ -71,7 +71,7 @@ namespace Mtconnect
         //     Reference to a logging service.
         public readonly ILogger _logger;
 
-        public DateTime? LastRead { get; private set; }
+        public DateTime? LastCommunicated { get; private set; }
 
         /// <summary>
         /// Constructs a new TCP connection
@@ -191,7 +191,7 @@ namespace Mtconnect
             try
             {
                 _stream?.Write(message, 0, message.Length);
-                LastRead = DateTime.Now;
+                LastCommunicated = DateTime.UtcNow;
                 return true;
             }
             catch (Exception ex)
@@ -225,7 +225,7 @@ namespace Mtconnect
             _logger?.LogDebug("Client: {clientId} is entering while loop (receive method).", this.ClientId);
 
             var delay = TimeSpan.FromMilliseconds(500);
-            var timeout = TimeSpan.FromMilliseconds(Heartbeat * 2);
+            var timeout = TimeSpan.FromMilliseconds(Heartbeat * 4);
 
             while (_client.Connected)
             {
@@ -234,9 +234,9 @@ namespace Mtconnect
                     break;
 
                 // Check the last time communication occurred between the remote connection. If beyond the timeout, then test the connection with an empty message as a "PING".
-                if (LastRead == null)
-                    LastRead = DateTime.UtcNow;
-                if ((DateTime.UtcNow - LastRead) >= timeout)
+                if (LastCommunicated == null)
+                    LastCommunicated = DateTime.UtcNow;
+                if ((DateTime.UtcNow - LastCommunicated) >= timeout)
                 {
                     // Try to send a ping
                     if (!Write("\r"))
@@ -277,7 +277,7 @@ namespace Mtconnect
                     else
                     {
                         _logger?.LogDebug("Client {clientId} has a message ({byteSize} bytes)", ClientId, bytesRead);
-                        LastRead = DateTime.UtcNow;
+                        LastCommunicated = DateTime.UtcNow;
                     }
 
                     // See if we have a line

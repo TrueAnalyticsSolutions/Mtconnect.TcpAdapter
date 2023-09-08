@@ -41,7 +41,7 @@ namespace Tests
 
                     DateTime startTime = DateTime.Now;
                     TimeSpan duration = TimeSpan.FromMilliseconds((int)(adapter.Heartbeat * 2.5));
-
+                    Console.WriteLine("ENTERING TIME LOOP");
                     while (DateTime.Now - startTime < duration)
                     {
                         if (stream.DataAvailable)
@@ -52,7 +52,9 @@ namespace Tests
                             Console.WriteLine($"Received: {input}");
                         }
                     }
+                    Console.WriteLine($"EXIT TIME LOOP");
                     Assert.AreEqual(1, adapter.CurrentConnections);
+                    Console.WriteLine($"DISCONNECTING");
                     client.Close();
                 }
 
