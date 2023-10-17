@@ -7,6 +7,10 @@ namespace Tests
 {
     public class ConnectionTests
     {
+        [TearDown]
+        public void CleanUp() {
+            _logger?.Dispose();
+        }
         private ILoggerFactory? _logger;
         private TcpAdapterOptions AdapterOptions { get; set; }
         const int TEST_PORT = 7000;
