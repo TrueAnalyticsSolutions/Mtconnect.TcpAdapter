@@ -60,7 +60,7 @@
             </summary>
             <param name="options"><inheritdoc cref="T:Mtconnect.TcpAdapterOptions" path="/summary"/></param>
         </member>
-        <member name="M:Mtconnect.TcpAdapter.HandleDataModelChanges(Mtconnect.Adapter,System.String)">
+        <member name="M:Mtconnect.TcpAdapter.HandleDataModelChanges(Mtconnect.AdapterSdk.Contracts.IAdapter,System.String)">
             <summary>
             Sends the following Agent commands to the client(s)
             <list type="bullet">

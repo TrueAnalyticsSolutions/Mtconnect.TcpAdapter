@@ -84,7 +84,7 @@ namespace Mtconnect
             base.OnDataModelRecieved += TcpAdapter_OnDataModelRecieved;
         }
 
-        private void TcpAdapter_OnDataModelRecieved(Adapter sender, AdapterDataModelReceivedEventArgs e)
+        private void TcpAdapter_OnDataModelRecieved(IAdapter sender, AdapterDataModelReceivedEventArgs e)
         {
             ReceivedDataModel = true;
 
@@ -103,7 +103,7 @@ namespace Mtconnect
         /// </summary>
         /// <param name="sender">Reference to the sending adapter</param>
         /// <param name="clientId">Reference to a specific client to send the commands to. If <c>null</c>, then the commands are sent to all client(s).</param>
-        private void HandleDataModelChanges(Adapter sender, string clientId = null)
+        private void HandleDataModelChanges(IAdapter sender, string clientId = null)
         {
             if (ReceivedDataModel && CanSendDataModel)
             {
