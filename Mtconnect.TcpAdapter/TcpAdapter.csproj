@@ -19,13 +19,14 @@
 	  <RepositoryType>git</RepositoryType>
 	  <PackageTags>Mtconnect;Adapter;TCP;TAMS;</PackageTags>
 	  <PackageReleaseNotes>Updated to latest AdapterSDK. Support for reference Agent SHDR commands.</PackageReleaseNotes>
-	  <Version>3.0.0-beta</Version>
+	  <Version>3.0.1-beta</Version>
 	  <IncludeSymbols>True</IncludeSymbols>
 	  <SymbolPackageFormat>snupkg</SymbolPackageFormat>
 	  <DebugSymbols>true</DebugSymbols>
 	  <EmbedAllSources>true</EmbedAllSources>
 	  <DebugType>portable</DebugType>
 	  <DocumentationFile>$(AssemblyName).xml</DocumentationFile>
+	  <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <ItemGroup>
