@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Mtconnect;
+using Mtconnect.AdapterSdk;
 using System.Net.Sockets;
 using System.Text;
 

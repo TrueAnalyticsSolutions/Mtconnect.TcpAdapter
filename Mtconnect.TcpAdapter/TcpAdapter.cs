@@ -7,6 +7,7 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Mtconnect.AdapterSdk;
 using Mtconnect.AdapterSdk.Contracts;
 using Mtconnect.AdapterSdk.DataItems;
 
