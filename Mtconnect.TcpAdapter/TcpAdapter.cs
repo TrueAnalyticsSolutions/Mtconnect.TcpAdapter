@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using Mtconnect.AdapterSdk;
-using Mtconnect.AdapterSdk.Contracts;
 using Mtconnect.AdapterSdk.DataItems;
 
 namespace Mtconnect
@@ -75,7 +72,7 @@ namespace Mtconnect
         /// Constructs a new <see cref="TcpAdapter"/>.
         /// </summary>
         /// <param name="options"><inheritdoc cref="TcpAdapterOptions" path="/summary"/></param>
-        public TcpAdapter(TcpAdapterOptions options, ILoggerFactory logFactory = default) : base(options, logFactory)
+        public TcpAdapter(TcpAdapterOptions options, IAdapterLogger logger = default) : base(options, logger)
         {
             Port = options.Port;
             MaxConnections = options.MaxConcurrentConnections;
