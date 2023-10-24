@@ -28,7 +28,7 @@ namespace Tests
         public void TcpClientConnect()
         {
             // Create and start TcpAdapter
-            using (var adapter = new TcpAdapter(AdapterOptions, _logger))
+            using (var adapter = new TcpAdapter(AdapterOptions, default))
             {
                 adapter.Start(new TestAdapterSource());
 
@@ -71,7 +71,7 @@ namespace Tests
         public void TcpClientDisconnect()
         {
             // Create and start TcpAdapter
-            using(var adapter = new TcpAdapter(AdapterOptions, _logger))
+            using(var adapter = new TcpAdapter(AdapterOptions, default))
             {
                 adapter.Start(new TestAdapterSource());
 
@@ -100,7 +100,7 @@ namespace Tests
         public void TcpClientTimeoutDisconnect()
         {
             // Create and start TcpAdapter
-            using (var adapter = new TcpAdapter(AdapterOptions, _logger))
+            using (var adapter = new TcpAdapter(AdapterOptions, default))
             {
                 adapter.Start(new TestAdapterSource());
 
@@ -131,7 +131,7 @@ namespace Tests
         [Test]
         public void MaxConnectionDenial()
         {
-            using (var adapter = new TcpAdapter(AdapterOptions, _logger))
+            using (var adapter = new TcpAdapter(AdapterOptions, default))
             {
                 adapter.Start(new TestAdapterSource());
 
