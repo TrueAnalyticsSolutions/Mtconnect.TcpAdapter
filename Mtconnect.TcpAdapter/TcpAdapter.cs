@@ -5,8 +5,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using Mtconnect.AdapterSdk.Contracts;
+using Mtconnect.AdapterSdk;
 using Mtconnect.AdapterSdk.DataItems;
 
 namespace Mtconnect
@@ -51,6 +50,8 @@ namespace Mtconnect
         /// A count of how many clients are currently connected to the TCP listener.
         /// </summary>
         public int CurrentConnections => _clients.Count;
+        // TODO: REMOVE THIS PROPERTY
+        public TcpConnection[] Connections => _clients.Values.ToArray();
 
         /// <summary>
         /// The server socket.
@@ -71,7 +72,7 @@ namespace Mtconnect
         /// Constructs a new <see cref="TcpAdapter"/>.
         /// </summary>
         /// <param name="options"><inheritdoc cref="TcpAdapterOptions" path="/summary"/></param>
-        public TcpAdapter(TcpAdapterOptions options, ILoggerFactory logFactory = default) : base(options, logFactory)
+        public TcpAdapter(TcpAdapterOptions options, IAdapterLogger logger = default) : base(options, logger)
         {
             Port = options.Port;
             MaxConnections = options.MaxConcurrentConnections;
@@ -81,7 +82,7 @@ namespace Mtconnect
             base.OnDataModelRecieved += TcpAdapter_OnDataModelRecieved;
         }
 
-        private void TcpAdapter_OnDataModelRecieved(Adapter sender, AdapterDataModelReceivedEventArgs e)
+        private void TcpAdapter_OnDataModelRecieved(IAdapter sender, AdapterDataModelReceivedEventArgs e)
         {
             ReceivedDataModel = true;
 
@@ -100,7 +101,7 @@ namespace Mtconnect
         /// </summary>
         /// <param name="sender">Reference to the sending adapter</param>
         /// <param name="clientId">Reference to a specific client to send the commands to. If <c>null</c>, then the commands are sent to all client(s).</param>
-        private void HandleDataModelChanges(Adapter sender, string clientId = null)
+        private void HandleDataModelChanges(IAdapter sender, string clientId = null)
         {
             if (ReceivedDataModel && CanSendDataModel)
             {
@@ -242,18 +243,19 @@ namespace Mtconnect
         {
             State = AdapterStates.Busy;
 
+            var delay = TimeSpan.FromMilliseconds(1000);
             try
             {
                 while (State == AdapterStates.Busy)
                 {
                     if (!_listener.Pending())
                     {
-                        await Task.Delay(TimeSpan.FromMilliseconds(Heartbeat));
+                        await Task.Delay(delay);
                         continue;
                     }
 
                     //blocks until a kvp has connected to the server
-                    var client = new TcpConnection(_listener.AcceptTcpClient(), (int)Heartbeat);
+                    var client = new TcpConnection(_listener.AcceptTcpClient(), (int)Heartbeat, _logger);
                     if (_clients.Count >= MaxConnections)
                     {
                         _logger?.LogWarning(
@@ -267,9 +269,9 @@ namespace Mtconnect
 
                     if (!_clients.ContainsKey(client.ClientId))
                     {
-                        _logger?.LogInformation("New client connection '{ClientId}' ({ActiveConnections}/{MaxConnections})", client.ClientId, _clients.Count, MaxConnections);
                         if (_clients.TryAdd(client.ClientId, client))
                         {
+                            _logger?.LogInformation("New client connection '{ClientId}' ({ActiveConnections}/{MaxConnections})", client.ClientId, _clients.Count, MaxConnections);
                             client.OnDisconnected += Client_OnConnectionDisconnected;
                             client.OnDataReceived += Client_OnReceivedData;
                             client.Connect();
@@ -328,21 +330,21 @@ namespace Mtconnect
             {
                 if (ex == null)
                 {
-                    _logger?.LogDebug("Client disconnecting '{ClientId}'", connection.ClientId);
+                    _logger?.LogDebug("Removing client '{ClientId}' from TcpAdapter", connection.ClientId);
                 } else
                 {
-                    _logger?.LogError("Client '{ClientId}' disconnecting due to error: \r\n\t{Error}", connection.ClientId, ex);
+                    _logger?.LogError("Remove client '{ClientId}' from TcpAdapter due to error: \r\n\t{Error}", connection.ClientId, ex);
                 }
                 if (_clients.TryRemove(connection.ClientId, out TcpConnection client))
                 {
-                    _logger?.LogInformation("Client '{ClientId}' disconnected", connection.ClientId);
+                    _logger?.LogInformation("Removed client '{ClientId}' from TcpAdapter", connection.ClientId);
                     if (_clients.Count == 0)
                     {
                         _logger?.LogInformation("No clients connected");
                     }
                 } else
                 {
-                    _logger?.LogWarning("Client '{ClientId}' failed to disconnect and may still linger", connection.ClientId);
+                    _logger?.LogWarning("Client '{ClientId}' could not be removed from TcpAdapter and may still linger", connection.ClientId);
                 }
             }
         }

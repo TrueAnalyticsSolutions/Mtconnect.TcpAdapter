@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using Mtconnect.AdapterSdk;
+﻿using Mtconnect.AdapterSdk;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -51,7 +50,7 @@ namespace Mtconnect
         }
 
         /// <inheritdoc />
-        public override Dictionary<string, object> UpdateFromConfig(ILogger logger = default)
+        public override Dictionary<string, object> UpdateFromConfig(IAdapterLogger logger = default)
         {
             var adapterSettings = base.UpdateFromConfig(logger);
 

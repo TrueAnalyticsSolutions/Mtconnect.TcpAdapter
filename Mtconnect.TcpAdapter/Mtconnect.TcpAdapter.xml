@@ -46,7 +46,7 @@
         </member>
         <member name="P:Mtconnect.TcpAdapter.ReceivedDataModel">
             <summary>
-            A flag for whether or not the underlying <see cref="T:Mtconnect.Adapter"/> has indicated that it received an <see cref="T:Mtconnect.IAdapterDataModel"/>. This is used to determine whether or not to send a Device Model to a new connection.
+            A flag for whether or not the underlying <see cref="T:Mtconnect.AdapterSdk.Adapter"/> has indicated that it received an <see cref="T:Mtconnect.AdapterSdk.IAdapterDataModel"/>. This is used to determine whether or not to send a Device Model to a new connection.
             </summary>
         </member>
         <member name="P:Mtconnect.TcpAdapter.CanSendDataModel">
@@ -54,13 +54,13 @@
             A flag indicating whether or not a Device Model should be generated and sent to client(s).
             </summary>
         </member>
-        <member name="M:Mtconnect.TcpAdapter.#ctor(Mtconnect.TcpAdapterOptions,Microsoft.Extensions.Logging.ILoggerFactory)">
+        <member name="M:Mtconnect.TcpAdapter.#ctor(Mtconnect.TcpAdapterOptions,Mtconnect.AdapterSdk.IAdapterLogger)">
             <summary>
             Constructs a new <see cref="T:Mtconnect.TcpAdapter"/>.
             </summary>
             <param name="options"><inheritdoc cref="T:Mtconnect.TcpAdapterOptions" path="/summary"/></param>
         </member>
-        <member name="M:Mtconnect.TcpAdapter.HandleDataModelChanges(Mtconnect.Adapter,System.String)">
+        <member name="M:Mtconnect.TcpAdapter.HandleDataModelChanges(Mtconnect.AdapterSdk.IAdapter,System.String)">
             <summary>
             Sends the following Agent commands to the client(s)
             <list type="bullet">
@@ -80,7 +80,7 @@
         <member name="M:Mtconnect.TcpAdapter.Stop(System.Exception)">
             <inheritdoc />
         </member>
-        <member name="M:Mtconnect.TcpAdapter.Send(Mtconnect.AdapterSdk.Contracts.DataItemSendTypes,System.String)">
+        <member name="M:Mtconnect.TcpAdapter.Send(Mtconnect.AdapterSdk.DataItemSendTypes,System.String)">
             <inheritdoc />
         </member>
         <member name="M:Mtconnect.TcpAdapter.Write(System.String,System.String)">
@@ -137,7 +137,7 @@
             <param name="maxConnections"><inheritdoc cref="P:Mtconnect.TcpAdapterOptions.MaxConcurrentConnections" path="/summary"/></param>
             <param name="sendDeviceModel"><inheritdoc cref="P:Mtconnect.TcpAdapterOptions.SendDeviceModel" path="/summary"/></param>
         </member>
-        <member name="M:Mtconnect.TcpAdapterOptions.UpdateFromConfig(Microsoft.Extensions.Logging.ILogger)">
+        <member name="M:Mtconnect.TcpAdapterOptions.UpdateFromConfig(Mtconnect.AdapterSdk.IAdapterLogger)">
             <inheritdoc />
         </member>
         <member name="E:Mtconnect.TcpConnection.OnConnected">
@@ -180,7 +180,7 @@
             Reference to the underlying client stream. Note, only available between <see cref="M:Mtconnect.TcpConnection.Connect"/> and <see cref="M:Mtconnect.TcpConnection.Disconnect(System.Exception)"/> calls.
             </summary>
         </member>
-        <member name="M:Mtconnect.TcpConnection.#ctor(System.Net.Sockets.TcpClient,System.Int32)">
+        <member name="M:Mtconnect.TcpConnection.#ctor(System.Net.Sockets.TcpClient,System.Int32,Mtconnect.AdapterSdk.IAdapterLogger)">
             <summary>
             Constructs a new TCP connection
             </summary>
@@ -222,13 +222,13 @@
         <member name="T:Mtconnect.UPnP.TcpUPnPService">
             <inheritdoc />
         </member>
-        <member name="M:Mtconnect.UPnP.TcpUPnPService.#ctor(Mtconnect.TcpAdapter,System.Double,System.String,System.Int32,Microsoft.Extensions.Logging.ILoggerFactory)">
-            <inheritdoc cref="M:Mtconnect.AdapterSdk.UPnP.UPnPService`1.#ctor(`0,System.Double,System.String,System.Int32,Microsoft.Extensions.Logging.ILoggerFactory)"/>
+        <member name="M:Mtconnect.UPnP.TcpUPnPService.#ctor(Mtconnect.TcpAdapter,System.Double,System.String,System.Int32,Mtconnect.AdapterSdk.IAdapterLogger)">
+            <inheritdoc cref="M:Mtconnect.AdapterSdk.UPnP.UPnPService`1.#ctor(`0,System.Double,System.String,System.Int32,Mtconnect.AdapterSdk.IAdapterLogger)"/>
             <param name="adapter">Reference to a <see cref="T:Mtconnect.TcpAdapter"/> instance.</param>
-            <param name="broadcastRate"><inheritdoc cref="M:Mtconnect.AdapterSdk.UPnP.UPnPService`1.#ctor(`0,System.Double,System.String,System.Int32,Microsoft.Extensions.Logging.ILoggerFactory)" path="[@name='broadcastRate']"/></param>
-            <param name="address"><inheritdoc cref="M:Mtconnect.AdapterSdk.UPnP.UPnPService`1.#ctor(`0,System.Double,System.String,System.Int32,Microsoft.Extensions.Logging.ILoggerFactory)" path="[@name='address']"/></param>
-            <param name="port"><inheritdoc cref="M:Mtconnect.AdapterSdk.UPnP.UPnPService`1.#ctor(`0,System.Double,System.String,System.Int32,Microsoft.Extensions.Logging.ILoggerFactory)" path="[@name='port']"/></param>
-            <param name="logFactory"><inheritdoc cref="M:Mtconnect.AdapterSdk.UPnP.UPnPService`1.#ctor(`0,System.Double,System.String,System.Int32,Microsoft.Extensions.Logging.ILoggerFactory)" path="[@name='logFactory']"/></param>
+            <param name="broadcastRate"><inheritdoc cref="M:Mtconnect.AdapterSdk.UPnP.UPnPService`1.#ctor(`0,System.Double,System.String,System.Int32,Mtconnect.AdapterSdk.IAdapterLogger)" path="[@name='broadcastRate']"/></param>
+            <param name="address"><inheritdoc cref="M:Mtconnect.AdapterSdk.UPnP.UPnPService`1.#ctor(`0,System.Double,System.String,System.Int32,Mtconnect.AdapterSdk.IAdapterLogger)" path="[@name='address']"/></param>
+            <param name="port"><inheritdoc cref="M:Mtconnect.AdapterSdk.UPnP.UPnPService`1.#ctor(`0,System.Double,System.String,System.Int32,Mtconnect.AdapterSdk.IAdapterLogger)" path="[@name='port']"/></param>
+            <param name="logger"><inheritdoc cref="M:Mtconnect.AdapterSdk.UPnP.UPnPService`1.#ctor(`0,System.Double,System.String,System.Int32,Mtconnect.AdapterSdk.IAdapterLogger)" path="[@name='logFactory']"/></param>
         </member>
         <member name="M:Mtconnect.UPnP.TcpUPnPService.ConstructDescription">
             <inheritdoc />
