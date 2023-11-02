@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	  <TargetFramework>netstandard2.0</TargetFramework>
+	  <TargetFrameworks>netcoreapp3.1;netstandard2.1;net461;</TargetFrameworks>
 	  <ApplicationIcon>icon.ico</ApplicationIcon>
 	  <BaseOutputPath>bin\</BaseOutputPath>
 	  <GenerateDocumentationFile>True</GenerateDocumentationFile>
@@ -27,7 +27,6 @@
 	  <DebugType>portable</DebugType>
 	  <DocumentationFile>$(AssemblyName).xml</DocumentationFile>
 	  <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-	  <EnableDynamicLoading>true</EnableDynamicLoading>
   </PropertyGroup>
 
   <ItemGroup>
