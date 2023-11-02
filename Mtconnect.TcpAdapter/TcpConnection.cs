@@ -1,11 +1,8 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Mtconnect.AdapterSdk;
 using System;
 using System.Collections;
-using System.IO;
 using System.Net;
-using System.Net.NetworkInformation;
 using System.Net.Sockets;
-using System.Security.Policy;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -69,7 +66,7 @@ namespace Mtconnect
         //
         // Summary:
         //     Reference to a logging service.
-        public readonly ILogger _logger;
+        public readonly IAdapterLogger _logger;
 
         public DateTime? LastCommunicated { get; private set; }
 
@@ -78,7 +75,7 @@ namespace Mtconnect
         /// </summary>
         /// <param name="client"><inheritdoc cref="TcpClient" path="/summary"/></param>
         /// <param name="heartbeat"><inheritdoc cref="Heartbeat" path="/summary"/></param>
-        public TcpConnection(TcpClient client, int heartbeat = 1000, ILogger logger = default)
+        public TcpConnection(TcpClient client, int heartbeat = 1000, IAdapterLogger logger = default)
         {
             _client = client;
             Heartbeat = heartbeat;
