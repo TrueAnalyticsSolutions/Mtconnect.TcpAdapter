@@ -53,7 +53,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Mtconnect.AdapterSdk" Version="3.0.1.2-bugfix1" />
+    <PackageReference Include="Mtconnect.AdapterSdk" Version="3.0.1.5-alpha-2" />
   </ItemGroup>
 
   <ItemGroup>
