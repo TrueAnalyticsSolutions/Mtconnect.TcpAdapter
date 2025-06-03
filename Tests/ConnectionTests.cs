@@ -38,7 +38,7 @@ namespace Tests
                     client.Connect(TEST_HOST, TEST_PORT);
                     Task.Delay(1000).Wait();
 
-                    Assert.AreEqual(1, adapter.CurrentConnections);
+                    Assert.Equals(1, adapter.CurrentConnections);
 
                     // Listen for a little bit
                     NetworkStream stream = client.GetStream();
@@ -58,7 +58,7 @@ namespace Tests
                         }
                     }
                     Console.WriteLine($"EXIT TIME LOOP");
-                    Assert.AreEqual(1, adapter.CurrentConnections);
+                    Assert.Equals(1, adapter.CurrentConnections);
                     Console.WriteLine($"DISCONNECTING");
                     client.Close();
                 }
@@ -81,7 +81,7 @@ namespace Tests
                     client.Connect(TEST_HOST, TEST_PORT);
                     Task.Delay(1000).Wait();
 
-                    Assert.AreEqual(1, adapter.CurrentConnections);
+                    Assert.Equals(1, adapter.CurrentConnections);
                     client.Close();
                 }
 
@@ -90,7 +90,7 @@ namespace Tests
                 Task.Delay((int)((adapter.Heartbeat+100) * 2)).Wait();
                 Console.WriteLine("DONE");
                 Console.WriteLine("EVALUATING");
-                Assert.AreEqual(0, adapter.CurrentConnections);
+                Assert.Equals(0, adapter.CurrentConnections);
 
                 Assert.Pass();
             }
@@ -110,7 +110,7 @@ namespace Tests
                     client.Connect(TEST_HOST, TEST_PORT);
                     Task.Delay(1000).Wait();
 
-                    Assert.AreEqual(1, adapter.CurrentConnections);
+                    Assert.Equals(1, adapter.CurrentConnections);
 
 
                     Console.WriteLine("CLOSING CLIENT");
@@ -122,7 +122,7 @@ namespace Tests
                 // Assert that the TcpClient was successfully removed from the TcpAdapter
                 Task.Delay((int)((adapter.Heartbeat +100) * 2)).Wait();
                 Console.WriteLine("FINISHED TIMEOUT");
-                Assert.AreEqual(0, adapter.CurrentConnections);
+                Assert.Equals(0, adapter.CurrentConnections);
 
                 Assert.Pass();
             }
@@ -143,11 +143,11 @@ namespace Tests
                     Task.Delay(1000).Wait();
                     if (i == adapter.MaxConnections)
                     {
-                        Assert.AreEqual(clients.Count, adapter.CurrentConnections);
+                        Assert.Equals(clients.Count, adapter.CurrentConnections);
                     } else
                     {
                         clients.Add(client);
-                        Assert.AreEqual(clients.Count, adapter.CurrentConnections);
+                        Assert.Equals(clients.Count, adapter.CurrentConnections);
                     }
                 }
 
@@ -157,7 +157,7 @@ namespace Tests
                     clients[i].Dispose();
                 }
                 Task.Delay(1000).Wait();
-                Assert.AreEqual(0, adapter.CurrentConnections);
+                Assert.Equals(0, adapter.CurrentConnections);
 
                 Assert.Pass();
             }
