@@ -71,7 +71,14 @@ namespace Mtconnect
         /// <summary>
         /// Constructs a new <see cref="TcpAdapter"/>.
         /// </summary>
-        /// <param name="options"><inheritdoc cref="TcpAdapterOptions" path="/summary"/></param>
+        /// <param name="options">
+        /// <list type="bullet">
+        /// <item><b>Address:</b> The IP Addrop for which the Adapter should stream data thru.</item>
+        /// <item><b>Port:</b> The port for which the Adapter should stream data thru.</item>
+        /// <item>The maximum number of connections allowed at any given point.</item>
+        /// <item>Flag that indicates whether or not the TCP Adapter should automaticlaly generate and send the Device Model to client(s).</item>
+        /// </list>
+        /// </param>
         public TcpAdapter(TcpAdapterOptions options, IAdapterLogger logger = default) : base(options, logger)
         {
             Port = options.Port;
